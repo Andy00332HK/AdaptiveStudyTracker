@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/text_view_session_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/text_view_timer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:text="FOCUS MODE"
+        android:textColor="#2196F3"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.2" />
+
+    <TextView
+        android:id="@+id/text_view_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="25:00"
+        android:textColor="#212121"
+        android:textSize="90sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_view_total_focus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_timer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Total Focused: 00:00"
+        android:alpha="0.6"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_start_pause"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/circle_button"
+            app:backgroundTint="@null"
+            android:src="@android:drawable/ic_media_play"
+            android:tint="#FFFFFF"
+            android:elevation="6dp"
+            android:stateListAnimator="@null" />
+
+        <ImageButton
+            android:id="@+id/button_stop"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:background="@drawable/circle_button"
+            app:backgroundTint="@null"
+            android:src="@drawable/ic_media_stop"
+            android:tint="#FFFFFF"
+            android:padding="28dp"
+            android:elevation="6dp"
+            android:alpha="0.6"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
+
+</RelativeLayout>
