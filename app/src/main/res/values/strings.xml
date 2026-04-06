@@ -54,4 +54,29 @@
     <string name="total_focus_default">Today\'s Focus: 00:00</string>
     <string name="content_desc_start_pause">Start or pause focus timer</string>
     <string name="content_desc_stop">Stop and reset focus timer</string>
+
+    <!-- Settings Fragment (added by Amy) -->
+    <string name="settings_section_usage">Phone Usage</string>
+    <string name="settings_section_sleep">Sleep Schedule</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_section_tracking">Usage Tracking</string>
+    <string name="daily_usage_limit_default">Daily screen time limit: 2h 0m</string>
+    <string name="bedtime_label">Bedtime</string>
+    <string name="wakeup_label">Wake up time</string>
+    <string name="enable_task_reminders">Enable task reminders</string>
+    <string name="enable_usage_warnings">Enable usage limit warnings</string>
+    <string name="enable_usage_tracking">Enable background usage tracking</string>
+    <string name="share_weekly_summary">Share Weekly Summary</string>
+
+    <!-- Calendar Import (added by Amy) -->
+    <string name="import_from_calendar">Import from Calendar</string>
+    <string name="no_upcoming_events">No upcoming events found in the next 7 days</string>
+    <string name="select_all">Select All</string>
+    <string name="import_selected">Import Selected</string>
+    <string name="no_events_selected">Please select at least one event</string>
+    <string name="import_result">Successfully imported %d task(s)</string>
+    <string name="import_result_with_skip">Imported %d task(s), skipped %d duplicate(s)</string>
+    <string name="calendar_import_success">Tasks updated from calendar</string>
+    <string name="calendar_permission_denied">Calendar permission is needed to import events</string>
+
 </resources>

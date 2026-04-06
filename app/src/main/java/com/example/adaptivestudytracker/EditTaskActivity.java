@@ -231,6 +231,11 @@ public class EditTaskActivity extends AppCompatActivity {
         target.importance = importance;
 
         taskStorage.saveTasks(tasks);
+
+        // ★ 新增：为任务设置提醒闹钟
+        TaskReminderManager.scheduleReminder(this, target);
+
+
         setResult(RESULT_OK);
         finish();
     }
@@ -239,6 +244,15 @@ public class EditTaskActivity extends AppCompatActivity {
         if (editingTaskId == null || editingTaskId.isEmpty()) {
             return;
         }
+
+        // ★ 新增：先取消提醒，再删除
+        for (Task task : taskStorage.loadTasks()) {
+            if (editingTaskId.equals(task.id)) {
+                TaskReminderManager.cancelReminder(this, task);
+                break;
+            }
+        }
+
         taskStorage.deleteTaskById(editingTaskId);
         setResult(RESULT_OK);
         finish();
