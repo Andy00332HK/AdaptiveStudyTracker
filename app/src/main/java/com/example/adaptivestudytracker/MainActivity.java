@@ -10,6 +10,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.app.AlarmManager;
+import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private int currentNavItemId = R.id.nav_dashboard;
@@ -17,8 +21,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        // ★ 创建通知渠道
+        NotificationHelper.createChannels(this);
+
+        // ★ Android 13+ 请求通知权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100);
+            }
+        }
+
+        // ★ Android 12+ 请求精确闹钟权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (!am.canScheduleExactAlarms()) {
+                // 弹出对话框引导用户去设置
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("Exact Alarm Permission Needed")
+                        .setMessage("To send task reminders on time, please allow exact alarms for this app.")
+                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                            Intent intent = new Intent(
+                                    android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                            intent.setData(android.net.Uri.parse(
+                                    "package:" + getPackageName()));
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Later", null)
+                        .show();
+            }
+        }
+
+        setContentView(R.layout.activity_main);
         MaterialToolbar topAppBar = findViewById(R.id.top_app_bar);
         setSupportActionBar(topAppBar);
 
