@@ -11,7 +11,7 @@
         android:layout_above="@id/text_view_timer"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:text="FOCUS MODE"
+        android:text="@string/focus_mode"
         android:textColor="#2196F3"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="25:00"
+        android:text="@string/focus_timer_default"
         android:textColor="#212121"
         android:textSize="90sp"
         android:textStyle="bold" />
@@ -34,16 +34,35 @@
         android:layout_below="@id/text_view_timer"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:text="Total Focused: 00:00"
+        android:text="@string/total_focus_default"
         android:alpha="0.6"
         android:textSize="20sp" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_silence_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_total_focus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/silence_notifications_during_focus" />
+
+    <TextView
+        android:id="@+id/text_view_dnd_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch_silence_notifications"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/dnd_status_off"
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="32dp"
         android:orientation="horizontal">
 
         <ImageButton
@@ -53,8 +72,9 @@
             android:layout_marginEnd="30dp"
             android:background="@drawable/circle_button"
             app:backgroundTint="@null"
+            android:contentDescription="@string/content_desc_start_pause"
             android:src="@android:drawable/ic_media_play"
-            android:tint="#FFFFFF"
+            app:tint="#FFFFFF"
             android:elevation="6dp"
             android:stateListAnimator="@null" />
 
@@ -62,14 +82,15 @@
             android:id="@+id/button_stop"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:background="@drawable/circle_button"
-            app:backgroundTint="@null"
-            android:src="@drawable/ic_media_stop"
-            android:tint="#FFFFFF"
-            android:padding="28dp"
-            android:elevation="6dp"
             android:alpha="0.6"
-            android:stateListAnimator="@null" />
+            android:background="@drawable/circle_button"
+            android:contentDescription="@string/content_desc_stop"
+            android:elevation="6dp"
+            android:padding="28dp"
+            android:src="@drawable/ic_media_stop"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@null"
+            app:tint="#FFFFFF" />
     </LinearLayout>
 
 </RelativeLayout>

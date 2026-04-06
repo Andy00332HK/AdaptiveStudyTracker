@@ -1,11 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Main Dashboard Activity"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/text_dashboard_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_metrics_title"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- Usage Access banner — only shown when permission not yet granted -->
+        <LinearLayout
+            android:id="@+id/layout_usage_access_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#FFF3E0"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/usage_access_explanation"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button_grant_usage_access"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/grant_usage_access" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_total_screen_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/total_screen_time_placeholder"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_app_screen_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/app_screen_time_placeholder"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_total_focus_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/total_focus_time_placeholder"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</ScrollView>
