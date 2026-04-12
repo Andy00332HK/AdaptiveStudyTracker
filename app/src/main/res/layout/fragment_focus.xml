@@ -230,28 +230,28 @@
         android:paddingEnd="32dp">
 
         <ImageButton
-            android:id="@+id/button_start_pause"
-            android:layout_width="76dp"
-            android:layout_height="76dp"
-            android:layout_marginEnd="28dp"
-            android:background="@drawable/circle_button"
-            android:contentDescription="@string/content_desc_start_pause"
-            android:elevation="4dp"
-            android:src="@android:drawable/ic_media_play"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@null"
-            app:tint="#FFFFFF" />
-
-        <ImageButton
             android:id="@+id/button_stop"
             android:layout_width="76dp"
             android:layout_height="76dp"
+            android:layout_marginEnd="28dp"
             android:alpha="0.65"
             android:background="@drawable/circle_button"
             android:contentDescription="@string/content_desc_stop"
             android:elevation="4dp"
             android:padding="26dp"
             android:src="@drawable/ic_media_stop"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@null"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/button_start_pause"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:background="@drawable/circle_button"
+            android:contentDescription="@string/content_desc_start_pause"
+            android:elevation="4dp"
+            android:src="@android:drawable/ic_media_play"
             android:stateListAnimator="@null"
             app:backgroundTint="@null"
             app:tint="#FFFFFF" />
