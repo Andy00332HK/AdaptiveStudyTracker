@@ -66,7 +66,7 @@
     <string name="enable_task_reminders">Enable task reminders</string>
     <string name="enable_usage_warnings">Enable usage limit warnings</string>
     <string name="enable_usage_tracking">Enable background usage tracking</string>
-    <string name="share_weekly_summary">Share Weekly Summary</string>
+    <string name="share_daily_summary">Share Daily Summary</string>
 
     <!-- Calendar Import (added by Amy) -->
     <string name="import_from_calendar">Import from Calendar</string>

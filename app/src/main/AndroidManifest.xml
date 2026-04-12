@@ -44,6 +44,12 @@
         <activity android:name=".EditTaskActivity" />
         <activity android:name=".TaskHistoryActivity" />
 
+        <activity
+            android:name=".CalendarImportActivity"
+            android:exported="false" />
+
+
+
         <!-- ===== Amy's Reminder Receiver ===== -->
         <receiver
             android:name=".ReminderBroadcastReceiver"
