@@ -16,6 +16,12 @@ import android.content.Context;
 import android.os.Build;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG_DASHBOARD = "tab_dashboard";
+    private static final String TAG_SCHEDULE = "tab_schedule";
+    private static final String TAG_FOCUS = "tab_focus";
+    private static final String TAG_INSIGHTS = "tab_insights";
+    private static final String TAG_SETTINGS = "tab_settings";
+
     private int currentNavItemId = R.id.nav_dashboard;
 
     @Override
@@ -62,15 +68,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new DashboardFragment())
+                    .add(R.id.fragment_container, new DashboardFragment(), TAG_DASHBOARD)
                     .commit();
             setTitle(R.string.title_dashboard);
             currentNavItemId = R.id.nav_dashboard;
+            bottomNav.setSelectedItemId(R.id.nav_dashboard);
+        } else {
+            currentNavItemId = bottomNav.getSelectedItemId();
+            setTitle(titleForNavItem(currentNavItemId));
         }
 
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
             int id = item.getItemId();
+
+            if (id == currentNavItemId) {
+                return true;
+            }
 
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if (currentFragment instanceof FocusFragment && id != R.id.nav_focus) {
@@ -82,33 +95,88 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            switchToTab(id);
             currentNavItemId = id;
-
-            if (id == R.id.nav_dashboard) {
-                selectedFragment = new DashboardFragment();
-                setTitle(R.string.title_dashboard);
-            } else if (id == R.id.nav_schedule) {
-                selectedFragment = new ScheduleFragment();
-                setTitle(R.string.title_schedule);
-            } else if (id == R.id.nav_focus) {
-                selectedFragment = new FocusFragment();
-                setTitle(R.string.title_focus);
-            } else if (id == R.id.nav_insights) {
-                selectedFragment = new StatisticsFragment();
-                setTitle(R.string.title_insights);
-            } else if (id == R.id.nav_settings) {
-                selectedFragment = new SettingsFragment();
-                setTitle(R.string.title_settings);
-            }
-
-            if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
-            }
+            setTitle(titleForNavItem(id));
             invalidateOptionsMenu();
             return true;
         });
+    }
+
+    private void switchToTab(int navItemId) {
+        String targetTag = fragmentTagForNavItem(navItemId);
+        if (targetTag == null) {
+            return;
+        }
+
+        Fragment targetFragment = getSupportFragmentManager().findFragmentByTag(targetTag);
+        if (targetFragment == null) {
+            targetFragment = fragmentForNavItem(navItemId);
+        }
+        if (targetFragment == null) {
+            return;
+        }
+
+        androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment.getId() == R.id.fragment_container
+                    && fragment.isAdded()
+                    && !targetTag.equals(fragment.getTag())) {
+                transaction.hide(fragment);
+            }
+        }
+
+        if (targetFragment.isAdded()) {
+            transaction.show(targetFragment);
+        } else {
+            transaction.add(R.id.fragment_container, targetFragment, targetTag);
+        }
+        transaction.commit();
+    }
+
+    private Fragment fragmentForNavItem(int navItemId) {
+        if (navItemId == R.id.nav_dashboard) {
+            return new DashboardFragment();
+        } else if (navItemId == R.id.nav_schedule) {
+            return new ScheduleFragment();
+        } else if (navItemId == R.id.nav_focus) {
+            return new FocusFragment();
+        } else if (navItemId == R.id.nav_insights) {
+            return new StatisticsFragment();
+        } else if (navItemId == R.id.nav_settings) {
+            return new SettingsFragment();
+        }
+        return null;
+    }
+
+    private String fragmentTagForNavItem(int navItemId) {
+        if (navItemId == R.id.nav_dashboard) {
+            return TAG_DASHBOARD;
+        } else if (navItemId == R.id.nav_schedule) {
+            return TAG_SCHEDULE;
+        } else if (navItemId == R.id.nav_focus) {
+            return TAG_FOCUS;
+        } else if (navItemId == R.id.nav_insights) {
+            return TAG_INSIGHTS;
+        } else if (navItemId == R.id.nav_settings) {
+            return TAG_SETTINGS;
+        }
+        return null;
+    }
+
+    private int titleForNavItem(int navItemId) {
+        if (navItemId == R.id.nav_dashboard) {
+            return R.string.title_dashboard;
+        } else if (navItemId == R.id.nav_schedule) {
+            return R.string.title_schedule;
+        } else if (navItemId == R.id.nav_focus) {
+            return R.string.title_focus;
+        } else if (navItemId == R.id.nav_insights) {
+            return R.string.title_insights;
+        } else if (navItemId == R.id.nav_settings) {
+            return R.string.title_settings;
+        }
+        return R.string.app_name;
     }
 
     @Override
