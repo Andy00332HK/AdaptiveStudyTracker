@@ -42,6 +42,13 @@ public class FocusFragment extends Fragment {
     private static final String PREFS_FOCUS = "focus_prefs";
     private static final String KEY_SUPPRESS_NOTIFICATIONS = "suppress_notifications";
 
+    // Called by MainActivity when user leaves Focus tab.
+    public boolean onTabSwitchedAway() {
+        boolean wasFocusRunning = mTimerRunning && !isBreakTime;
+        endSessionAndRestoreTimer();
+        return wasFocusRunning;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_focus, container, false);
@@ -107,6 +114,9 @@ public class FocusFragment extends Fragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 mTimeLeftInMillis = millisUntilFinished;
                 long currentSecond = millisUntilFinished / 1000;
 
@@ -124,6 +134,9 @@ public class FocusFragment extends Fragment {
 
             @Override
             public void onFinish() {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
                 mTimerRunning = false;
                 handleSessionSwitch();
             }
@@ -166,13 +179,33 @@ public class FocusFragment extends Fragment {
         updateUIState();
     }
 
+    // Interrupted focus session should stop and return to a fresh focus timer.
+    private void endSessionAndRestoreTimer() {
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+        restoreNotificationsIfNeeded();
+        mTimerRunning = false;
+        isBreakTime = false;
+        mTimeLeftInMillis = FOCUS_TIME;
+        updateCountDownText();
+        updateUIState();
+    }
+
     private void updateCountDownText() {
+        if (mTextViewTimer == null) {
+            return;
+        }
         int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
         int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
         mTextViewTimer.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
     }
 
     private void updateTotalFocusText() {
+        if (mTextViewTotalFocus == null || !isAdded()) {
+            return;
+        }
         long minutes = mTotalFocusSeconds / 60;
         long seconds = mTotalFocusSeconds % 60;
         mTextViewTotalFocus.setText(
@@ -184,6 +217,9 @@ public class FocusFragment extends Fragment {
      * Updates all UI elements: Icons, Labels, and Colors based on current state.
      */
     private void updateUIState() {
+        if (mButtonStartPause == null) {
+            return;
+        }
         // 1. Update Start/Pause Icon
         if (mTimerRunning) {
             mButtonStartPause.setImageResource(android.R.drawable.ic_media_pause);
@@ -221,6 +257,17 @@ public class FocusFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+        restoreNotificationsIfNeeded();
+        mTimerRunning = false;
+        super.onDestroyView();
+    }
+
     private boolean isSuppressionEnabled() {
         return requireContext()
                 .getSharedPreferences(PREFS_FOCUS, Context.MODE_PRIVATE)
@@ -255,6 +302,9 @@ public class FocusFragment extends Fragment {
     }
 
     private void updateDndStatusText() {
+        if (mTextViewDndStatus == null) {
+            return;
+        }
         if (!isSuppressionEnabled()) {
             mTextViewDndStatus.setText(R.string.dnd_status_off);
             return;

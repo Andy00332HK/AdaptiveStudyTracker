@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private int currentNavItemId = R.id.nav_dashboard;
@@ -71,6 +71,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
+
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof FocusFragment && id != R.id.nav_focus) {
+                boolean sessionInterrupted = ((FocusFragment) currentFragment).onTabSwitchedAway();
+                if (sessionInterrupted) {
+                    Snackbar.make(findViewById(R.id.fragment_container), R.string.focus_session_interrupted, Snackbar.LENGTH_SHORT)
+                            .setAnchorView(R.id.bottom_navigation)
+                            .show();
+                }
+            }
+
             currentNavItemId = id;
 
             if (id == R.id.nav_dashboard) {
