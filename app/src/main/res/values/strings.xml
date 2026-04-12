@@ -32,7 +32,6 @@
     <string name="importance_5">5: most important</string>
     <string name="task_meta_format">%1$s | importance %2$d | due %3$s</string>
     <string name="task_reminder_format">Reminder: %1$s</string>
-    <string name="dashboard_metrics_title">Dashboard</string>
     <string name="dashboard_subtitle">Live updates of your day and completion momentum.</string>
     <string name="today_screen_time_title">Today Screen Time</string>
     <string name="app_screen_time_title">App Screen Time</string>
@@ -41,7 +40,6 @@
     <string name="no_recent_completed_tasks">No completed tasks yet. Finish one task to see it here.</string>
     <string name="recent_task_meta_format">%1$s | importance %2$d</string>
     <string name="untitled_task">Untitled task</string>
-    <string name="insights_title">Insights</string>
     <string name="insights_subtitle">Your weekly focus and screen-time trends (Mon-Sun).</string>
     <string name="insights_usage_access_hint">Grant Usage Access in Settings to include screen-time bars in this chart.</string>
     <string name="insights_weekly_chart_title">Weekly Focus vs Screen Time</string>

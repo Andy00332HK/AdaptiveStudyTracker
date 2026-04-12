@@ -18,19 +18,9 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Page title -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title_focus"
-                android:textColor="#111827"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/focus_subtitle"
                 android:textColor="#6B7280"
                 android:textSize="13sp" />
