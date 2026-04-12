@@ -141,7 +141,7 @@ public class SettingsFragment extends Fragment {
         });
 
         // ---- 分享按钮（Implicit Intent）----
-        buttonShareSummary.setOnClickListener(v -> shareWeeklySummary());
+        buttonShareSummary.setOnClickListener(v -> shareDailySummary());
     }
 
     /* ----- 辅助方法 ----- */
@@ -158,27 +158,59 @@ public class SettingsFragment extends Fragment {
      * 使用 Implicit Intent 分享用户的聚焦摘要。
      * 对应 Proposal §4.5 的 "Share weekly summaries via messaging or email apps" [1]。
      */
-    private void shareWeeklySummary() {
-        ScreenTimeTracker tracker = new ScreenTimeTracker(requireContext());
-        long focusMin = tracker.getTotalFocusSeconds() / 60;
+    private void shareDailySummary() {
+        try {
+            ScreenTimeTracker tracker = new ScreenTimeTracker(requireContext());
+            long focusMin = tracker.getTotalFocusSeconds() / 60;
 
-        String message = String.format(Locale.getDefault(),
-                "📊 My Adaptive Study Tracker Summary:\n" +
-                        "🎯 Today's focus time: %d minutes\n" +
-                        "📱 Usage limit: %dh %dm\n" +
-                        "😴 Sleep schedule: %02d:%02d – %02d:%02d\n" +
-                        "Keep up the great work! 💪",
-                focusMin,
-                settingsManager.getUsageLimitMinutes() / 60,
-                settingsManager.getUsageLimitMinutes() % 60,
-                settingsManager.getSleepStartHour(),
-                settingsManager.getSleepStartMinute(),
-                settingsManager.getSleepEndHour(),
-                settingsManager.getSleepEndMinute());
+            // screen usage time
+            boolean hasAccess = UsageStatsHelper.hasUsageAccess(requireContext());
+            String usageTimeFormatted = "N/A";
+            if (hasAccess) {
+                long totalScreenMs = UsageStatsHelper.getTodayTotalScreenTimeMs(requireContext());
+                long totalScreenMinutes = totalScreenMs / (1000 * 60);
+                long hours = totalScreenMinutes / 60;
+                long minutes = totalScreenMinutes % 60;
+                usageTimeFormatted = String.format(Locale.getDefault(), "%dh %dm", hours, minutes);
+            }
 
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("text/plain");
-        share.putExtra(Intent.EXTRA_TEXT, message);
-        startActivity(Intent.createChooser(share, "Share via"));
+            // usage limit
+            int limitMinutes = settingsManager.getUsageLimitMinutes();
+            long limitHours = limitMinutes / 60;
+            long limitMins = limitMinutes % 60;
+
+            // sleep time
+            int sleepStartHour = settingsManager.getSleepStartHour();
+            int sleepStartMinute = settingsManager.getSleepStartMinute();
+            int sleepEndHour = settingsManager.getSleepEndHour();
+            int sleepEndMinute = settingsManager.getSleepEndMinute();
+
+            String message = String.format(Locale.getDefault(),
+                    "📊 My Adaptive Study Tracker Summary:\n" +
+                            "🎯 Today's focus time: %d minutes\n" +
+                            "📱 Usage time: %s\n" +
+                            "📱 Usage limit: %dh %dm\n" +
+                            "😴 Sleep schedule: %02d:%02d – %02d:%02d\n" +
+                            "Keep up the great work! 💪",
+                    focusMin,              // %d
+                    usageTimeFormatted,    // %s
+                    limitHours,
+                    limitMins,
+                    sleepStartHour,
+                    sleepStartMinute,
+                    sleepEndHour,
+                    sleepEndMinute);
+
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, message);
+            startActivity(Intent.createChooser(share, "Share via"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(),
+                    "Error sharing summary: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

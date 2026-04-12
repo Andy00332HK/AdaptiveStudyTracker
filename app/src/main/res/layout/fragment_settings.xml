@@ -137,7 +137,7 @@
             android:id="@+id/button_share_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/share_weekly_summary"
+            android:text="@string/share_daily_summary"
             app:icon="@android:drawable/ic_menu_share"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
