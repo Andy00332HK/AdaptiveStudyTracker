@@ -3,7 +3,6 @@ package com.example.adaptivestudytracker;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +23,6 @@ import java.util.Locale;
 public class DashboardFragment extends Fragment {
 
     private static final int DASHBOARD_REFRESH_MS = 1000;
-    private static final long USAGE_RESYNC_INTERVAL_MS = 15000L;
     private static final int MAX_RECENT_TASKS = 5;
 
     private TextView totalScreenTimeView;
@@ -36,12 +33,7 @@ public class DashboardFragment extends Fragment {
     private ScreenTimeTracker screenTimeTracker;
     private TaskStorage taskStorage;
     private RecentCompletedTaskAdapter recentCompletedTaskAdapter;
-
-    private long displayedTotalScreenMs;
-    private long displayedAppScreenMs;
-    private long lastResyncElapsedMs;
-    private long lastTickElapsedMs;
-    private long lastSyncedDayStartMs = -1L;
+    private SharedScreenTimeState sharedScreenTimeState;
 
     private final Handler refreshHandler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRunnable = new Runnable() {
@@ -74,6 +66,7 @@ public class DashboardFragment extends Fragment {
 
         screenTimeTracker = new ScreenTimeTracker(requireContext());
         taskStorage = new TaskStorage(requireContext());
+        sharedScreenTimeState = SharedScreenTimeState.getInstance();
 
         recentCompletedTaskAdapter = new RecentCompletedTaskAdapter();
         recentRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -88,8 +81,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        lastTickElapsedMs = SystemClock.elapsedRealtime();
-        lastResyncElapsedMs = 0L;
+        sharedScreenTimeState.beginVisibleSession();
         refreshRecentCompletedTasks();
         refreshHandler.removeCallbacks(refreshRunnable);
         refreshHandler.post(refreshRunnable);
@@ -102,41 +94,12 @@ public class DashboardFragment extends Fragment {
     }
 
     private void refreshMetrics() {
-        boolean hasAccess = UsageStatsHelper.hasUsageAccess(requireContext());
-        usageAccessBanner.setVisibility(hasAccess ? View.GONE : View.VISIBLE);
+        SharedScreenTimeState.Snapshot snapshot = sharedScreenTimeState.update(requireContext());
+        usageAccessBanner.setVisibility(snapshot.hasUsageAccess ? View.GONE : View.VISIBLE);
 
-        if (hasAccess) {
-            long nowElapsedMs = SystemClock.elapsedRealtime();
-            if (lastTickElapsedMs == 0L) {
-                lastTickElapsedMs = nowElapsedMs;
-            }
-            long deltaMs = Math.max(0L, nowElapsedMs - lastTickElapsedMs);
-            lastTickElapsedMs = nowElapsedMs;
-
-            if (lastResyncElapsedMs == 0L || (nowElapsedMs - lastResyncElapsedMs) >= USAGE_RESYNC_INTERVAL_MS) {
-                long todayStartMs = getStartOfTodayMs();
-                long usageTotalMs = UsageStatsHelper.getTodayTotalScreenTimeMs(requireContext());
-                long usageAppMs = UsageStatsHelper.getTodayAppScreenTimeMs(requireContext());
-
-                if (lastSyncedDayStartMs != todayStartMs) {
-                    // Day rollover: accept system values directly.
-                    displayedTotalScreenMs = usageTotalMs;
-                    displayedAppScreenMs = usageAppMs;
-                    lastSyncedDayStartMs = todayStartMs;
-                } else {
-                    // Same day: never regress because UsageStatsManager can lag temporarily.
-                    displayedTotalScreenMs = Math.max(displayedTotalScreenMs, usageTotalMs);
-                    displayedAppScreenMs = Math.max(displayedAppScreenMs, usageAppMs);
-                }
-                lastResyncElapsedMs = nowElapsedMs;
-            } else {
-                // While dashboard is visible, this app is foreground; increment for smoother real-time UI.
-                displayedTotalScreenMs += deltaMs;
-                displayedAppScreenMs += deltaMs;
-            }
-
-            totalScreenTimeView.setText(getString(R.string.total_screen_time_format, formatDuration(displayedTotalScreenMs)));
-            appScreenTimeView.setText(getString(R.string.app_screen_time_format, formatDuration(displayedAppScreenMs)));
+        if (snapshot.hasUsageAccess) {
+            totalScreenTimeView.setText(getString(R.string.total_screen_time_format, formatDuration(snapshot.totalScreenMs)));
+            appScreenTimeView.setText(getString(R.string.app_screen_time_format, formatDuration(snapshot.appScreenMs)));
         } else {
             totalScreenTimeView.setText(getString(R.string.total_screen_time_format, getString(R.string.usage_access_required)));
             appScreenTimeView.setText(getString(R.string.app_screen_time_format, getString(R.string.usage_access_required)));
@@ -171,12 +134,4 @@ public class DashboardFragment extends Fragment {
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, remainingSeconds);
     }
 
-    private long getStartOfTodayMs() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis();
-    }
 }

@@ -16,13 +16,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class StatisticsFragment extends Fragment {
 
-    private static final int INSIGHTS_REFRESH_MS = 5000;
+    private static final int INSIGHTS_REFRESH_MS = 1000;
 
     private WeeklyUsageChartView weeklyChartView;
     private TextView weekRangeView;
@@ -33,6 +32,7 @@ public class StatisticsFragment extends Fragment {
     private TextView usageAccessHint;
 
     private ScreenTimeTracker screenTimeTracker;
+    private SharedScreenTimeState sharedScreenTimeState;
 
     private final Handler refreshHandler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRunnable = new Runnable() {
@@ -63,12 +63,14 @@ public class StatisticsFragment extends Fragment {
         usageAccessHint = view.findViewById(R.id.text_insights_usage_access_hint);
 
         screenTimeTracker = new ScreenTimeTracker(requireContext());
+        sharedScreenTimeState = SharedScreenTimeState.getInstance();
         refreshInsights();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        sharedScreenTimeState.beginVisibleSession();
         refreshHandler.removeCallbacks(refreshRunnable);
         refreshHandler.post(refreshRunnable);
     }
@@ -79,17 +81,25 @@ public class StatisticsFragment extends Fragment {
         refreshHandler.removeCallbacks(refreshRunnable);
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        refreshHandler.removeCallbacks(refreshRunnable);
+        if (!hidden && isAdded()) {
+            sharedScreenTimeState.beginVisibleSession();
+            refreshHandler.post(refreshRunnable);
+        }
+    }
+
     private void refreshInsights() {
-        LocalDate weekStart = LocalDate.now().with(DayOfWeek.MONDAY);
+        SharedScreenTimeState.Snapshot snapshot = sharedScreenTimeState.update(requireContext());
+        LocalDate weekStart = snapshot.weekStart;
         LocalDate weekEnd = weekStart.plusDays(6);
 
         List<Long> focusDaily = screenTimeTracker.getCurrentWeekFocusSecondsMondayFirst();
-        boolean hasAccess = UsageStatsHelper.hasUsageAccess(requireContext());
-        List<Long> screenDaily = hasAccess
-                ? UsageStatsHelper.getCurrentWeekTotalScreenTimeMsMondayFirst(requireContext())
-                : createZeroList(7);
+        List<Long> screenDaily = snapshot.hasUsageAccess ? snapshot.weekScreenDailyMs : createZeroList(7);
 
-        usageAccessHint.setVisibility(hasAccess ? View.GONE : View.VISIBLE);
+        usageAccessHint.setVisibility(snapshot.hasUsageAccess ? View.GONE : View.VISIBLE);
         weeklyChartView.setData(weekStart, focusDaily, screenDaily);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault());
@@ -125,12 +135,13 @@ public class StatisticsFragment extends Fragment {
     }
 
     private List<Long> createZeroList(int count) {
-        List<Long> values = new ArrayList<>();
+        List<Long> values = new java.util.ArrayList<>();
         for (int i = 0; i < count; i++) {
             values.add(0L);
         }
         return values;
     }
+
 
     private String formatDuration(long totalSeconds) {
         long hours = totalSeconds / 3600;
