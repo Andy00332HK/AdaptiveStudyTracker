@@ -7,11 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 /**
- * Reads today's screen time data from the system UsageStatsManager API.
+ * Reads screen time data from the system UsageStatsManager API.
  * Requires the user to grant Usage Access via Settings.
  */
 public class UsageStatsHelper {
@@ -36,26 +40,8 @@ public class UsageStatsHelper {
         return new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
     }
 
-    /**
-     * Sum of all apps foreground time today.
-     * UsageStatsManager foreground time is the best available proxy for
-     * total screen-on time without a system privilege.
-     */
     public static long getTodayTotalScreenTimeMs(Context context) {
-        UsageStatsManager usm =
-                (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        List<UsageStats> stats = usm.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                getStartOfTodayMs(),
-                System.currentTimeMillis()
-        );
-        long total = 0;
-        if (stats != null) {
-            for (UsageStats s : stats) {
-                total += s.getTotalTimeInForeground();
-            }
-        }
-        return total;
+        return getTotalScreenTimeMsForRange(context, getStartOfTodayMs(), System.currentTimeMillis());
     }
 
     /** Foreground time for this specific app today. */
@@ -77,6 +63,56 @@ public class UsageStatsHelper {
         return 0;
     }
 
+    public static long getTotalScreenTimeMsForRange(Context context, long startMs, long endMs) {
+        UsageStatsManager usm =
+                (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        List<UsageStats> stats = usm.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                startMs,
+                endMs
+        );
+        long total = 0;
+        if (stats != null) {
+            for (UsageStats s : stats) {
+                total += s.getTotalTimeInForeground();
+            }
+        }
+        return total;
+    }
+
+    public static List<Long> getLastNDaysTotalScreenTimeMs(Context context, int days) {
+        List<Long> values = new ArrayList<>();
+        if (days <= 0) {
+            return values;
+        }
+        LocalDate startDate = LocalDate.now().minusDays(days - 1L);
+        for (int i = 0; i < days; i++) {
+            LocalDate date = startDate.plusDays(i);
+            long start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long end = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            if (date.equals(LocalDate.now())) {
+                end = System.currentTimeMillis();
+            }
+            values.add(getTotalScreenTimeMsForRange(context, start, end));
+        }
+        return values;
+    }
+
+    public static List<Long> getCurrentWeekTotalScreenTimeMsMondayFirst(Context context) {
+        List<Long> values = new ArrayList<>();
+        LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = monday.plusDays(i);
+            long start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long end = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            if (date.equals(LocalDate.now())) {
+                end = System.currentTimeMillis();
+            }
+            values.add(getTotalScreenTimeMsForRange(context, start, end));
+        }
+        return values;
+    }
+
     private static long getStartOfTodayMs() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -86,4 +122,3 @@ public class UsageStatsHelper {
         return cal.getTimeInMillis();
     }
 }
-
