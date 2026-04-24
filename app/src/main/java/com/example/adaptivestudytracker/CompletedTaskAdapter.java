@@ -18,6 +18,7 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
 
     public interface CompletedTaskActionListener {
         void onDeleteCompletedTask(Task task);
+        void onRestoreCompletedTask(Task task);
     }
 
     private final List<Task> tasks = new ArrayList<>();
@@ -52,6 +53,9 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
                 dateFormat.format(new Date(task.dueTimeMillis))
         ));
         holder.buttonDelete.setOnClickListener(v -> actionListener.onDeleteCompletedTask(task));
+        if (holder.buttonRestore != null) {
+            holder.buttonRestore.setOnClickListener(v -> actionListener.onRestoreCompletedTask(task));
+        }
     }
 
     @Override
@@ -63,12 +67,20 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
         final TextView title;
         final TextView meta;
         final Button buttonDelete;
+        final Button buttonRestore;
 
         CompletedTaskViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.text_completed_task_title);
             meta = itemView.findViewById(R.id.text_completed_task_meta);
             buttonDelete = itemView.findViewById(R.id.button_delete_completed_task);
+            // buttonRestore may be null in older layouts, guard accordingly
+            Button tmpRestore = null;
+            try {
+                tmpRestore = itemView.findViewById(R.id.button_restore_completed_task);
+            } catch (Exception ignored) {
+            }
+            buttonRestore = tmpRestore;
         }
     }
 }

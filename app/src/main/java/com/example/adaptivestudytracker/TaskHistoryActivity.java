@@ -40,7 +40,17 @@ public class TaskHistoryActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_completed_tasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CompletedTaskAdapter(this::deleteCompletedTask);
+        adapter = new CompletedTaskAdapter(new CompletedTaskAdapter.CompletedTaskActionListener() {
+            @Override
+            public void onDeleteCompletedTask(Task task) {
+                deleteCompletedTask(task);
+            }
+
+            @Override
+            public void onRestoreCompletedTask(Task task) {
+                restoreCompletedTask(task);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         reloadCompletedTasks();
@@ -74,6 +84,29 @@ public class TaskHistoryActivity extends AppCompatActivity {
     }
 
     private void deleteCompletedTask(Task task) {
+        taskStorage.deleteCompletedTaskById(task.id);
+        reloadCompletedTasks();
+    }
+
+    private void restoreCompletedTask(Task task) {
+        // Load existing scheduled tasks and avoid duplicate IDs
+        List<Task> tasks = taskStorage.loadTasks();
+        boolean exists = false;
+        for (Task t : tasks) {
+            if (t.id != null && t.id.equals(task.id)) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            tasks.add(task);
+            taskStorage.saveTasks(tasks);
+            // Schedule reminder for the restored task
+            TaskReminderManager.scheduleReminder(this, task);
+        }
+
+        // Remove from completed list and refresh
         taskStorage.deleteCompletedTaskById(task.id);
         reloadCompletedTasks();
     }

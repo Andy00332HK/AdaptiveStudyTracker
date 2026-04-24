@@ -23,6 +23,7 @@
     <string name="more_actions">More actions</string>
     <string name="delete_all_completed">Delete all completed tasks</string>
     <string name="no_completed_tasks">No completed tasks yet.</string>
+    <string name="restore_task">Restore to schedule</string>
     <string name="daily">daily</string>
     <string name="off">off</string>
     <string name="importance_1">1: least important</string>
