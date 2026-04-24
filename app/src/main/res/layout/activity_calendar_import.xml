@@ -13,7 +13,6 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         style="@style/Widget.MaterialComponents.Toolbar.Primary" />
 
-    <!-- 空状态提示 -->
     <TextView
         android:id="@+id/text_empty_calendar"
         android:layout_width="match_parent"
@@ -24,14 +23,12 @@
         android:padding="32dp"
         android:visibility="gone" />
 
-    <!-- 事件列表 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_events"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- 底部操作栏 -->
     <LinearLayout
         android:id="@+id/layout_bottom_bar"
         android:layout_width="match_parent"

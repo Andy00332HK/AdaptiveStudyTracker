@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ====== Phone Usage ====== -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- ====== Sleep Schedule ====== -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
         </LinearLayout>
 
-        <!-- ====== Notifications ====== -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             android:checked="true"
             android:layout_marginBottom="16dp" />
 
-        <!-- ====== Usage Tracking Service ====== -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
             android:checked="false"
             android:layout_marginBottom="24dp" />
 
-        <!-- ====== Share ====== -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_share_summary"
             android:layout_width="match_parent"

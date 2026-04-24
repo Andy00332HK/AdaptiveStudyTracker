@@ -44,14 +44,14 @@ public class CalendarImportActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // 加载未来7天的日历事件
+        // Load upcoming events for the next 7 days
         loadEvents();
 
-        // 全选
+        // Select all toggle
         selectAll.setOnCheckedChangeListener((btn, checked) ->
                 adapter.selectAll(checked));
 
-        // 导入选中的事件
+        // Import selected events
         buttonImport.setOnClickListener(v -> importSelectedEvents());
     }
 
@@ -79,13 +79,13 @@ public class CalendarImportActivity extends AppCompatActivity {
             return;
         }
 
-        // 读取现有任务，检查重复
+        // Load existing tasks and check for duplicates
         List<Task> existingTasks = taskStorage.loadTasks();
         int importedCount = 0;
         int skippedCount  = 0;
 
         for (CalendarImportHelper.CalendarEvent event : selected) {
-            // 简单去重：标题和截止时间都相同则跳过
+            // Simple duplicate check: skip if title and due time match
             boolean duplicate = false;
             for (Task existing : existingTasks) {
                 if (existing.title.equals(event.title)
@@ -103,15 +103,15 @@ public class CalendarImportActivity extends AppCompatActivity {
             Task newTask = CalendarImportHelper.eventToTask(event);
             existingTasks.add(newTask);
 
-            // 为导入的任务调度提醒
+            // Schedule reminders for imported tasks
             TaskReminderManager.scheduleReminder(this, newTask);
             importedCount++;
         }
 
-        // 保存
+        // Save updated task list
         taskStorage.saveTasks(existingTasks);
 
-        // 提示结果
+        // Show result message
         String message;
         if (skippedCount > 0) {
             message = getString(R.string.import_result_with_skip,

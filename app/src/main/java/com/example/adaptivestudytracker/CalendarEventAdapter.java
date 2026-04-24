@@ -27,7 +27,7 @@ public class CalendarEventAdapter
         notifyDataSetChanged();
     }
 
-    /** 返回所有被用户勾选的事件 */
+    /** Return all events selected by the user */
     public List<CalendarImportHelper.CalendarEvent> getSelectedEvents() {
         List<CalendarImportHelper.CalendarEvent> selected = new ArrayList<>();
         for (CalendarImportHelper.CalendarEvent e : events) {
@@ -36,7 +36,7 @@ public class CalendarEventAdapter
         return selected;
     }
 
-    /** 全选 / 取消全选 */
+    /** Select or deselect all events */
     public void selectAll(boolean select) {
         for (CalendarImportHelper.CalendarEvent e : events) {
             e.selected = select;
@@ -68,12 +68,12 @@ public class CalendarEventAdapter
         String calInfo = event.calendarName != null ? event.calendarName : "";
         if (event.description != null && !event.description.isEmpty()) {
             calInfo += (calInfo.isEmpty() ? "" : " · ") + event.description;
-            // 截断描述
+            // Truncate long descriptions
             if (calInfo.length() > 80) calInfo = calInfo.substring(0, 80) + "…";
         }
         holder.calendarName.setText(calInfo);
 
-        // 点击整行也能切换复选框
+        // Clicking the row toggles the checkbox as well
         holder.itemView.setOnClickListener(v -> {
             event.selected = !event.selected;
             holder.checkBox.setChecked(event.selected);

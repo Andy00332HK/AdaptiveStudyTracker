@@ -14,11 +14,11 @@ public class TaskReminderManager {
     private static final String TAG = "TaskReminderManager";
 
     /**
-     * 提前提醒的时间。
-     * 如果 DDL 距离现在不足这个时间，则立刻触发（延迟5秒确保系统能调度）。
+     * How long before a task due time to trigger a reminder.
+     * If the task is due sooner than this, trigger as soon as possible (with a minimum delay).
      */
-    private static final long REMINDER_OFFSET_MS = 30 * 60 * 1000L; // 1小时
-    private static final long MIN_DELAY_MS = 5_000L; // 最小延迟5秒
+    private static final long REMINDER_OFFSET_MS = 30 * 60 * 1000L; // 30 minutes
+    private static final long MIN_DELAY_MS = 5_000L; // minimum delay 5 seconds
 
     public static final String ACTION_TASK_REMINDER =
             "com.example.adaptivestudytracker.ACTION_TASK_REMINDER";
@@ -26,7 +26,7 @@ public class TaskReminderManager {
     public static final String EXTRA_TASK_TITLE = "extra_task_title";
     public static final String EXTRA_TASK_DUE   = "extra_task_due";
 
-    /** 为单个任务设置提醒闹钟 */
+    /** Schedule a reminder alarm for a single task */
     public static void scheduleReminder(Context context, Task task) {
         SettingsManager settings = new SettingsManager(context);
         if (!settings.isRemindersEnabled()) {
@@ -40,14 +40,14 @@ public class TaskReminderManager {
 
         long now = System.currentTimeMillis();
 
-        // 计算触发时间：DDL前1小时，但至少是"现在+5秒"
+        // Compute trigger time: due time minus offset, but at least now + MIN_DELAY_MS
         long triggerTime = task.dueTimeMillis - REMINDER_OFFSET_MS;
         if (triggerTime <= now) {
-            // DDL不足1小时，改为尽快触发
+            // If due within offset, trigger as soon as possible
             triggerTime = now + MIN_DELAY_MS;
         }
 
-        // 如果DDL已经过了，不设置提醒
+        // If the due time has already passed, do not schedule
         if (task.dueTimeMillis <= now) {
             Log.d(TAG, "Task already past due, skipping: " + task.title);
             return;
@@ -64,7 +64,7 @@ public class TaskReminderManager {
                             AlarmManager.RTC_WAKEUP, triggerTime, pi);
                     Log.d(TAG, "Scheduled EXACT alarm for: " + task.title);
                 } else {
-                    // 无精确闹钟权限 → 用 setWindow 给一个30秒窗口
+                    // No exact-alarm permission -> use setWindow with a 30s window
                     am.setWindow(AlarmManager.RTC_WAKEUP,
                             triggerTime, 30_000L, pi);
                     Log.d(TAG, "Scheduled WINDOW alarm for: " + task.title
@@ -78,20 +78,20 @@ public class TaskReminderManager {
                 am.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pi);
             }
         } catch (SecurityException e) {
-            // 最后兜底：用最基本的 set()
+            // Fallback: use the basic set() call
             Log.w(TAG, "SecurityException, falling back to set(): " + e.getMessage());
             am.set(AlarmManager.RTC_WAKEUP, triggerTime, pi);
         }
     }
 
-    /** 取消单个任务的闹钟 */
+    /** Cancel reminder for a single task */
     public static void cancelReminder(Context context, Task task) {
         AlarmManager am = (AlarmManager)
                 context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(buildPendingIntent(context, task));
     }
 
-    /** 重新调度所有未完成任务 */
+    /** Reschedule reminders for all pending tasks */
     public static void rescheduleAll(Context context) {
         List<Task> tasks = new TaskStorage(context).loadTasks();
         for (Task t : tasks) {
@@ -99,7 +99,7 @@ public class TaskReminderManager {
         }
     }
 
-    /** 取消所有任务的闹钟 */
+    /** Cancel reminders for all tasks */
     public static void cancelAll(Context context) {
         List<Task> tasks = new TaskStorage(context).loadTasks();
         for (Task t : tasks) {

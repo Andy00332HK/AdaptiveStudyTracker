@@ -20,7 +20,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // 确保通知渠道已创建
+        // Ensure notification channels exist
         NotificationHelper.createChannels(context);
 
         String action    = intent.getAction();
@@ -28,7 +28,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         String taskTitle = intent.getStringExtra(TaskReminderManager.EXTRA_TASK_TITLE);
         long   taskDue   = intent.getLongExtra(TaskReminderManager.EXTRA_TASK_DUE, 0);
 
-        /* ---- "Mark as Done" 按钮被点击 ---- */
+        /* ---- 'Mark as Done' action clicked ---- */
         if (ACTION_MARK_DONE.equals(action) && taskId != null) {
             TaskStorage storage = new TaskStorage(context);
             List<Task> tasks = storage.loadTasks();
@@ -44,7 +44,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
-        /* ---- 正常提醒：弹出通知 ---- */
+        /* ---- Regular reminder: show notification ---- */
         if (taskTitle == null) taskTitle = "Task";
 
         String dueText = DateFormat
@@ -59,7 +59,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
                 ("done_" + taskId).hashCode(), doneIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // 点击通知主体 → 打开 App
+        // Tap notification to open the app
         Intent openIntent = new Intent(context, MainActivity.class);
         openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -86,7 +86,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             NotificationManagerCompat.from(context)
                     .notify(taskId.hashCode(), builder.build());
         } catch (SecurityException ignored) {
-            // Android 13+ 缺少 POST_NOTIFICATIONS 权限
+            // Missing POST_NOTIFICATIONS permission on Android 13+
         }
     }
 }

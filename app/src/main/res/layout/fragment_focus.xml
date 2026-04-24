@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Scrollable content area -->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,7 +25,7 @@
                 android:textColor="#6B7280"
                 android:textSize="13sp" />
 
-            <!-- Mode selector -->
+
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/toggle_focus_mode"
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <!-- Countdown duration picker (visible only in Countdown mode) -->
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_countdown_duration"
                 android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Timer card -->
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- DND / Silence notifications card -->
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Action buttons — pinned at bottom -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

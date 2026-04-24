@@ -20,7 +20,7 @@ public class PhoneUsageTrackingService extends Service {
     private static final String TAG = "UsageTrackingService";
     private static final int  NOTIF_ID_SERVICE = 9001;
     private static final int  NOTIF_ID_WARNING = 9002;
-    /** 每60秒检查一次（方便测试；上线后可改回15分钟） */
+    /** Check every 60 seconds (short for testing; change to 15 minutes in production) */
     private static final long CHECK_INTERVAL   = 60 * 1000L;
 
     private Handler  handler;
@@ -76,7 +76,7 @@ public class PhoneUsageTrackingService extends Service {
     @Override
     public IBinder onBind(Intent intent) { return null; }
 
-    /* ========== 检查使用量 ========== */
+    /* ========== Usage checks ========== */
     private void checkUsageAgainstLimit() {
         if (!UsageStatsHelper.hasUsageAccess(this)) {
             Log.w(TAG, "No usage access permission");
@@ -102,7 +102,7 @@ public class PhoneUsageTrackingService extends Service {
         }
     }
 
-    /* ========== 检查睡眠时间 ========== */
+    /* ========== Sleep checks ========== */
     private void checkSleepTime() {
         SettingsManager settings = new SettingsManager(this);
         if (!settings.isRemindersEnabled()) return;
@@ -115,7 +115,7 @@ public class PhoneUsageTrackingService extends Service {
         int sleepStartTotal = settings.getSleepStartHour() * 60
                 + settings.getSleepStartMinute();
 
-        // 在就寝时间的前后2分钟窗口内触发提醒（因为每分钟检查一次）
+        // Trigger reminder within a 2-minute window around bedtime (checks run every minute)
         int diff = currentTotal - sleepStartTotal;
         if (diff >= 0 && diff <= 2) {
             showSleepReminderNotification(settings.getSleepStartHour(),
@@ -123,7 +123,7 @@ public class PhoneUsageTrackingService extends Service {
         }
     }
 
-    /* ========== 通知 ========== */
+    /* ========== Notifications ========== */
     private Notification buildForegroundNotification() {
         PendingIntent pi = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class),

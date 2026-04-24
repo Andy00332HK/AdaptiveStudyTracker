@@ -7,17 +7,11 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
-    <!-- 开机完成 → 重新设置提醒 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!-- 通知权限（Android 13+） -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- 前台服务 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- 精确闹钟（Android 12+） -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <!-- 在已有的 SCHEDULE_EXACT_ALARM 下面再加一行 -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <!-- 前台服务类型（Android 14+） -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
@@ -50,12 +44,9 @@
 
 
 
-        <!-- ===== Amy's Reminder Receiver ===== -->
         <receiver
             android:name=".ReminderBroadcastReceiver"
             android:exported="false" />
-
-        <!-- ===== Amy's Boot Receiver ===== -->
         <receiver
             android:name=".BootReceiver"
             android:exported="true">
@@ -63,8 +54,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <!-- ===== Amy's Phone Usage Tracking front service ===== -->
         <service
             android:name=".PhoneUsageTrackingService"
             android:exported="false"

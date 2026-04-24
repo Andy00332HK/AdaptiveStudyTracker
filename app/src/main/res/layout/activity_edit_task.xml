@@ -106,8 +106,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/label_importance" />
 
-            <!-- Buttons moved out of the scrollable content so they remain fixed at the bottom -->
-            <!-- Placeholder view to keep spacing inside the scroll content if needed -->
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="24dp"
@@ -118,7 +117,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Fixed button bar at the bottom -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

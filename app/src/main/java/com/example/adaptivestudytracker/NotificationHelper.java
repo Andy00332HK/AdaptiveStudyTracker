@@ -16,21 +16,21 @@ public class NotificationHelper {
             NotificationManager nm =
                     context.getSystemService(NotificationManager.class);
 
-            // 1) 任务提醒 — 高优先级，弹出横幅
+            // 1) Task reminders — high importance so they show as banners
             NotificationChannel reminders = new NotificationChannel(
                     CHANNEL_REMINDERS,
                     "Task Reminders",
                     NotificationManager.IMPORTANCE_HIGH);
             reminders.setDescription("Notifications for upcoming task deadlines");
 
-            // 2) 使用量警告 — ★ 改为 HIGH，这样会弹出横幅
+            // 2) Usage warnings — high importance so they appear as banners
             NotificationChannel usage = new NotificationChannel(
                     CHANNEL_USAGE,
                     "Usage Warnings",
                     NotificationManager.IMPORTANCE_HIGH);
             usage.setDescription("Alerts when screen time exceeds your limit");
 
-            // 3) 前台服务 — 低优先级，常驻但不打扰
+            // 3) Foreground service — low importance, persistent but unobtrusive
             NotificationChannel service = new NotificationChannel(
                     CHANNEL_SERVICE,
                     "Background Service",

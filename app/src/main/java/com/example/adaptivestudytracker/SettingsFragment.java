@@ -55,7 +55,7 @@ public class SettingsFragment extends Fragment {
         setupListeners();
     }
 
-    /* ----- 从 SettingsManager 读取并刷新 UI ----- */
+    /* ----- Load settings and update UI ----- */
     private void loadCurrentSettings() {
         int limitMin = settingsManager.getUsageLimitMinutes();
         seekBarUsageLimit.setProgress(limitMin);
@@ -73,10 +73,10 @@ public class SettingsFragment extends Fragment {
         switchUsageTracking.setChecked(settingsManager.isUsageTrackingEnabled());
     }
 
-    /* ----- 监听器 ----- */
+    /* ----- Listeners ----- */
     private void setupListeners() {
 
-        // ---- SeekBar：每日使用上限 ----
+        // SeekBar: daily usage limit
         seekBarUsageLimit.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
@@ -90,7 +90,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // ---- 就寝时间 ----
+        // Sleep start time
         buttonSleepStart.setOnClickListener(v ->
                 new TimePickerDialog(requireContext(), (view, h, m) -> {
                     settingsManager.setSleepStart(h, m);
@@ -99,7 +99,7 @@ public class SettingsFragment extends Fragment {
                         settingsManager.getSleepStartMinute(), true).show()
         );
 
-        // ---- 起床时间 ----
+        // Wakeup time
         buttonSleepEnd.setOnClickListener(v ->
                 new TimePickerDialog(requireContext(), (view, h, m) -> {
                     settingsManager.setSleepEnd(h, m);
@@ -108,7 +108,7 @@ public class SettingsFragment extends Fragment {
                         settingsManager.getSleepEndMinute(), true).show()
         );
 
-        // ---- 任务提醒开关 ----
+        // Task reminders switch
         switchReminders.setOnCheckedChangeListener((btn, checked) -> {
             settingsManager.setRemindersEnabled(checked);
             if (checked) {
@@ -118,11 +118,11 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // ---- 使用量警告开关 ----
+        // Usage warnings switch
         switchUsageWarnings.setOnCheckedChangeListener((btn, checked) ->
                 settingsManager.setUsageWarningsEnabled(checked));
 
-        // ---- 后台追踪服务开关 ----
+        // Background tracking switch
         switchUsageTracking.setOnCheckedChangeListener((btn, checked) -> {
             settingsManager.setUsageTrackingEnabled(checked);
             if (checked) {
@@ -140,11 +140,11 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // ---- 分享按钮（Implicit Intent）----
+        // Share button (implicit intent)
         buttonShareSummary.setOnClickListener(v -> shareDailySummary());
     }
 
-    /* ----- 辅助方法 ----- */
+    /* ----- Helper methods ----- */
     private void updateUsageLimitLabel(int minutes) {
         usageLimitLabel.setText(String.format(Locale.getDefault(),
                 "Daily screen time limit: %dh %dm", minutes / 60, minutes % 60));
@@ -155,8 +155,7 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * 使用 Implicit Intent 分享用户的聚焦摘要。
-     * 对应 Proposal §4.5 的 "Share weekly summaries via messaging or email apps" [1]。
+     * Share a brief summary of today's focus and usage via an implicit intent.
      */
     private void shareDailySummary() {
         try {

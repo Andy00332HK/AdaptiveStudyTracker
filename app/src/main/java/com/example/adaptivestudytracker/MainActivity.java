@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ★ 创建通知渠道
+        // Create notification channels
         NotificationHelper.createChannels(this);
 
-        // ★ Android 13+ 请求通知权限
+        // Request notification permission on Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
                     != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -40,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // ★ Android 12+ 请求精确闹钟权限
+        // Prompt user to allow exact alarms on Android 12+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             if (!am.canScheduleExactAlarms()) {
-                // 弹出对话框引导用户去设置
+                // Show dialog to guide user to the system settings
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Exact Alarm Permission Needed")
                         .setMessage("To send task reminders on time, please allow exact alarms for this app.")

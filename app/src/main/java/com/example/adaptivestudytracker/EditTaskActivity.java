@@ -142,7 +142,8 @@ public class EditTaskActivity extends AppCompatActivity {
                 editTitle.setText(task.title);
                 spinnerCategory.setSelection(categories.indexOf(task.category));
                 spinnerImportance.setSelection(Math.max(0, task.importance - 1));
-                switchDailyReminder.setChecked(Task.REMINDER_NONE.equals(task.reminderFrequency) ? false : true);
+                // Reminder switch on if task has a reminder set
+                switchDailyReminder.setChecked(!Task.REMINDER_NONE.equals(task.reminderFrequency));
                 selectedDueTimeMillis = task.dueTimeMillis;
                 updateDueTimeLabel();
                 break;
@@ -232,7 +233,7 @@ public class EditTaskActivity extends AppCompatActivity {
 
         taskStorage.saveTasks(tasks);
 
-        // ★ 新增：为任务设置提醒闹钟
+        // Schedule reminder for the task (if enabled in settings)
         TaskReminderManager.scheduleReminder(this, target);
 
 
@@ -245,7 +246,7 @@ public class EditTaskActivity extends AppCompatActivity {
             return;
         }
 
-        // ★ 新增：先取消提醒，再删除
+        // Cancel any scheduled reminder for this task before deleting
         for (Task task : taskStorage.loadTasks()) {
             if (editingTaskId.equals(task.id)) {
                 TaskReminderManager.cancelReminder(this, task);

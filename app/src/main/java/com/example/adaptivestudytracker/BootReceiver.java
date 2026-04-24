@@ -9,10 +9,10 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) return;
 
-        // 重新调度所有任务提醒
+        // Reschedule all task reminders after boot
         TaskReminderManager.rescheduleAll(context);
 
-        // 如果用户之前开启了使用量追踪服务，重新启动
+        // Restart usage tracking service if it was enabled before reboot
         SettingsManager settings = new SettingsManager(context);
         if (settings.isUsageTrackingEnabled()) {
             PhoneUsageTrackingService.start(context);

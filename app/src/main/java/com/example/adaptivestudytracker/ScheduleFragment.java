@@ -41,7 +41,7 @@ public class ScheduleFragment extends Fragment {
                         }
                     });
 
-    // 导入日历结果
+    // Calendar import result
     private final ActivityResultLauncher<Intent> importCalendarLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -53,7 +53,7 @@ public class ScheduleFragment extends Fragment {
                         }
                     });
 
-    // 运行时权限请求
+    // Runtime permission request
     private final ActivityResultLauncher<String> requestCalendarPermission =
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(), granted -> {
@@ -103,7 +103,7 @@ public class ScheduleFragment extends Fragment {
 
         fabAddTask.setOnClickListener(v -> openEditTaskScreen(null));
 
-        // ★ 新增：日历导入按钮
+        // Calendar import button
         fabImportCalendar.setOnClickListener(v -> checkCalendarPermissionAndImport());
     }
 
@@ -141,10 +141,10 @@ public class ScheduleFragment extends Fragment {
         reloadTasks();
     }
 
-    /* ========== 日历导入逻辑 ========== */
+    /* ========== Calendar import logic ========== */
 
     /**
-     * 检查 READ_CALENDAR 权限，有则直接打开，没有则请求
+     * Check READ_CALENDAR permission; open import screen if granted, otherwise request it.
      */
     private void checkCalendarPermissionAndImport() {
         if (ContextCompat.checkSelfPermission(requireContext(),
@@ -157,7 +157,7 @@ public class ScheduleFragment extends Fragment {
     }
 
     /**
-     * 使用 Explicit Intent 打开日历导入页面 [1]
+     * Open the calendar import screen using an explicit Intent.
      */
     private void openCalendarImport() {
         Intent intent = new Intent(requireContext(), CalendarImportActivity.class);
