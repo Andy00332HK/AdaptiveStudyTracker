@@ -26,11 +26,9 @@ import java.util.Locale;
 
 public class FocusFragment extends Fragment {
 
-    // ── Mode ────────────────────────────────────────────────────────────────
     private enum FocusMode { POMODORO, INFINITE, COUNTDOWN }
     private FocusMode currentMode = FocusMode.POMODORO;
 
-    // ── Views ────────────────────────────────────────────────────────────────
     private TextView mTextViewTimer, mTextViewTotalFocus, mTextViewSessionType, mTextViewDndStatus;
     private TextView mTextCountdownDuration;
     private View mCardCountdownDuration;
@@ -38,26 +36,25 @@ public class FocusFragment extends Fragment {
     private SwitchMaterial mSwitchSilenceNotifications;
     private MaterialButtonToggleGroup mToggleFocusMode;
 
-    // ── State ────────────────────────────────────────────────────────────────
     private boolean mTimerRunning = false;
     private boolean isBreakTime = false;    // Pomodoro only
     private long mTotalFocusSeconds = 0;
 
-    // ── Pomodoro / Countdown (CountDownTimer) ───────────────────────────────
+    // Pomodoro / Countdown (CountDownTimer)
     private static final long POMODORO_FOCUS_MS = 25 * 60 * 1000L;
     private static final long POMODORO_BREAK_MS = 5 * 60 * 1000L;
     private long mTimeLeftInMillis = POMODORO_FOCUS_MS;
     private CountDownTimer mCountDownTimer;
 
-    // ── Countdown custom duration ────────────────────────────────────────────
+    // Countdown custom duration
     private long mCountdownDurationMs = 30 * 60 * 1000L; // default 30 min
 
-    // ── Infinite (count-up) ──────────────────────────────────────────────────
+    // Infinite (count-up)
     private long mInfiniteElapsedSeconds = 0L;
     private final Handler mInfiniteHandler = new Handler(Looper.getMainLooper());
     private Runnable mInfiniteRunnable;
 
-    // ── DND ──────────────────────────────────────────────────────────────────
+    // DND
     private NotificationManager notificationManager;
     private int previousInterruptionFilter = NotificationManager.INTERRUPTION_FILTER_ALL;
     private boolean dndApplied = false;
@@ -67,17 +64,13 @@ public class FocusFragment extends Fragment {
 
     private ScreenTimeTracker screenTimeTracker;
 
-    // ── Called by MainActivity when user leaves the Focus tab ────────────────
+    // Called by MainActivity when user leaves the Focus tab
     public boolean onTabSwitchedAway() {
         boolean wasFocusRunning = mTimerRunning
                 && (currentMode != FocusMode.POMODORO || !isBreakTime);
         endSessionAndRestoreTimer();
         return wasFocusRunning;
     }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    // Lifecycle
-    // ═════════════════════════════════════════════════════════════════════════
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -157,9 +150,7 @@ public class FocusFragment extends Fragment {
         super.onDestroyView();
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
     // Mode switching
-    // ═════════════════════════════════════════════════════════════════════════
 
     private void switchMode(FocusMode mode) {
         if (currentMode == mode) return;
@@ -178,9 +169,7 @@ public class FocusFragment extends Fragment {
         }
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
     // Start / Pause / Reset / End
-    // ═════════════════════════════════════════════════════════════════════════
 
     private void startTimer() {
         applySuppressionIfNeeded();
@@ -344,9 +333,7 @@ public class FocusFragment extends Fragment {
                 .show();
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
     // UI update helpers
-    // ═════════════════════════════════════════════════════════════════════════
 
     private void refreshUI() {
         updateTimerText();
@@ -425,9 +412,7 @@ public class FocusFragment extends Fragment {
         updateSessionLabel();
     }
 
-    // ═════════════════════════════════════════════════════════════════════════
-    // DND helpers (unchanged)
-    // ═════════════════════════════════════════════════════════════════════════
+    // DND helpers
 
     private boolean isSuppressionEnabled() {
         return requireContext().getSharedPreferences(PREFS_FOCUS, Context.MODE_PRIVATE)

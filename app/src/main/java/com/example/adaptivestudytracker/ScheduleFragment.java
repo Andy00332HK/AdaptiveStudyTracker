@@ -31,7 +31,7 @@ public class ScheduleFragment extends Fragment {
     private TaskAdapter taskAdapter;
     private final List<Task> tasks = new ArrayList<>();
 
-    /* ---- Activity Result Launchers ---- */
+    //  Activity Result Launchers
 
     private final ActivityResultLauncher<Intent> editTaskLauncher =
             registerForActivityResult(
