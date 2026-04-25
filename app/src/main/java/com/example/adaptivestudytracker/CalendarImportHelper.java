@@ -18,11 +18,11 @@ public class CalendarImportHelper {
      * Represents a calendar event (not yet converted into a Task).
      */
     public static class CalendarEvent {
-        public long   eventId;
+        public long eventId;
         public String title;
         public String description;
-        public long   dtStart;   // start time (ms)
-        public long   dtEnd;     // end time (ms)
+        public long dtStart;   // start time (ms)
+        public long dtEnd;     // end time (ms)
         public String calendarName;
         public boolean selected = false; // whether the user selected this event
 
@@ -84,20 +84,20 @@ public class CalendarImportHelper {
                 return events;
             }
 
-            int idIdx    = cursor.getColumnIndex(CalendarContract.Events._ID);
+            int idIdx = cursor.getColumnIndex(CalendarContract.Events._ID);
             int titleIdx = cursor.getColumnIndex(CalendarContract.Events.TITLE);
-            int descIdx  = cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION);
+            int descIdx = cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION);
             int startIdx = cursor.getColumnIndex(CalendarContract.Events.DTSTART);
-            int endIdx   = cursor.getColumnIndex(CalendarContract.Events.DTEND);
-            int calIdx   = cursor.getColumnIndex(CalendarContract.Events.CALENDAR_DISPLAY_NAME);
+            int endIdx = cursor.getColumnIndex(CalendarContract.Events.DTEND);
+            int calIdx = cursor.getColumnIndex(CalendarContract.Events.CALENDAR_DISPLAY_NAME);
 
             while (cursor.moveToNext()) {
-                long   eventId     = cursor.getLong(idIdx);
-                String title       = cursor.getString(titleIdx);
+                long   eventId = cursor.getLong(idIdx);
+                String title = cursor.getString(titleIdx);
                 String description = cursor.getString(descIdx);
-                long   dtStart     = cursor.getLong(startIdx);
-                long   dtEnd       = endIdx >= 0 ? cursor.getLong(endIdx) : dtStart;
-                String calName     = cursor.getString(calIdx);
+                long   dtStart = cursor.getLong(startIdx);
+                long   dtEnd = endIdx >= 0 ? cursor.getLong(endIdx) : dtStart;
+                String calName = cursor.getString(calIdx);
 
                 if (title == null || title.trim().isEmpty()) {
                     title = "(No Title)";

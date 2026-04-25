@@ -96,9 +96,9 @@ public class CalendarEventAdapter
 
         EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            checkBox     = itemView.findViewById(R.id.checkbox_event);
-            title        = itemView.findViewById(R.id.text_event_title);
-            time         = itemView.findViewById(R.id.text_event_time);
+            checkBox = itemView.findViewById(R.id.checkbox_event);
+            title = itemView.findViewById(R.id.text_event_title);
+            time = itemView.findViewById(R.id.text_event_time);
             calendarName = itemView.findViewById(R.id.text_event_calendar);
         }
     }

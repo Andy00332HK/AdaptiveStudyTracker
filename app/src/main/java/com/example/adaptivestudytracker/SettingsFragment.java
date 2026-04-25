@@ -22,14 +22,14 @@ import java.util.Locale;
 public class SettingsFragment extends Fragment {
 
     private SettingsManager settingsManager;
-    private TextView        usageLimitLabel;
-    private SeekBar         seekBarUsageLimit;
-    private Button          buttonSleepStart;
-    private Button          buttonSleepEnd;
-    private Button          buttonShareSummary;
-    private SwitchMaterial  switchReminders;
-    private SwitchMaterial  switchUsageWarnings;
-    private SwitchMaterial  switchUsageTracking;
+    private TextView usageLimitLabel;
+    private SeekBar seekBarUsageLimit;
+    private Button buttonSleepStart;
+    private Button buttonSleepEnd;
+    private Button buttonShareSummary;
+    private SwitchMaterial switchReminders;
+    private SwitchMaterial switchUsageWarnings;
+    private SwitchMaterial switchUsageTracking;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,14 +42,14 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         settingsManager = new SettingsManager(requireContext());
 
-        usageLimitLabel     = view.findViewById(R.id.text_usage_limit_label);
-        seekBarUsageLimit   = view.findViewById(R.id.seekbar_usage_limit);
-        buttonSleepStart    = view.findViewById(R.id.button_sleep_start);
-        buttonSleepEnd      = view.findViewById(R.id.button_sleep_end);
-        switchReminders     = view.findViewById(R.id.switch_task_reminders);
+        usageLimitLabel = view.findViewById(R.id.text_usage_limit_label);
+        seekBarUsageLimit = view.findViewById(R.id.seekbar_usage_limit);
+        buttonSleepStart = view.findViewById(R.id.button_sleep_start);
+        buttonSleepEnd = view.findViewById(R.id.button_sleep_end);
+        switchReminders = view.findViewById(R.id.switch_task_reminders);
         switchUsageWarnings = view.findViewById(R.id.switch_usage_warnings);
         switchUsageTracking = view.findViewById(R.id.switch_usage_tracking);
-        buttonShareSummary  = view.findViewById(R.id.button_share_summary);
+        buttonShareSummary = view.findViewById(R.id.button_share_summary);
 
         loadCurrentSettings();
         setupListeners();
